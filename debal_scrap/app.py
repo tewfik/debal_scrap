@@ -9,4 +9,4 @@ def app():
 
     data = list(group.expenses())
     df = pd.DataFrame(data)
-    df.to_csv("data.csv")
+    df.to_csv(input("save as <filename.csv>: "))
