@@ -7,6 +7,7 @@ from typing import Dict, List
 from bs4 import BeautifulSoup
 from iterfzf import iterfzf
 
+from debal_scrap.config import get_config
 from debal_scrap.utils import flatten
 from debal_scrap.http import ThrottledSessionFactory, SessionFactoryMixin
 
@@ -18,11 +19,17 @@ class Debal(SessionFactoryMixin):
     """Documentation for Debal"""
 
     def __init__(self):
+        self.config = get_config()
         self.session_factory = ThrottledSessionFactory()
         self.groups = self._login()
 
     def _login(self) -> Dict[str, str]:
         body = {
+            "_method": ["POST"],
+            "data[User][email]": [self.config["DEBAL_EMAIL"]],
+            "data[User][password]": [self.config["DEBAL_PASSWORD"]],
+            "data[_Token][fields]": [self.config["DEBAL_TOKEN_FIELDS"]],
+            "data[_Token][key]": [self.config["DEBAL_TOKEN_KEY"]],
         }
 
         resp = self.session.post(f"{BASE_URL}/users/login", data=body)
